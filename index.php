@@ -13,6 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
     <script src="scripts/angular-chart.min.js"></script>
     <script src="scripts/app.js"></script>
+    <script src="scripts/googlesheet.js"></script>
     <script src="scripts/utility.js"></script>
 </head>
 

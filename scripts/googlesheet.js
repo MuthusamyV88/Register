@@ -1,139 +1,124 @@
-// Client ID and API key from the Developer Console
-var CLIENT_ID = '514289995274-7lu2meok547opdhobk1ltsd9c1dmdrtb.apps.googleusercontent.com';
-
-// Array of API discovery doc URLs for APIs used by the quickstart
-var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
-
-// Authorization scopes required by the API; multiple scopes can be
-// included, separated by spaces.
-var SCOPES = "https://www.googleapis.com/auth/spreadsheets.readonly";
-
-var parsedEnties = [];
-var authorizeButton = document.getElementById('authorize-button');
-var signoutButton = document.getElementById('signout-button');
-
-handleClientLoad();
-/**
- *  On load, called to load the auth2 library and API client library.
- */
-function handleClientLoad() {
-    gapi.load('client:auth2', initClient);
-}
-
-/**
- *  Initializes the API client library and sets up sign-in state
- *  listeners.
- */
-function initClient() {
-    gapi.client.init({
-        discoveryDocs: DISCOVERY_DOCS,
-        clientId: CLIENT_ID,
-        scope: SCOPES
-    }).then(function () {
-        // Listen for sign-in state changes.
-        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-
-        // Handle the initial sign-in state.
-        updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-        authorizeButton.onclick = handleAuthClick;
-        signoutButton.onclick = handleSignoutClick;
-    });
-}
-
-/**
- *  Called when the signed in status changes, to update the UI
- *  appropriately. After a sign-in, the API is called.
- */
-function updateSigninStatus(isSignedIn) {
-    if (isSignedIn) {
-        $('#signIn').hide();
-        $('#signOut').show();
-    } else {
-        $('#signIn').show();
-        $('#signOut').hide();
-    }
-}
-
-/**
- *  Sign in the user upon button click.
- */
-function handleAuthClick(event) {
-    gapi.auth2.getAuthInstance().signIn();
-}
-
-/**
- *  Sign out the user upon button click.
- */
-function handleSignoutClick(event) {
-    gapi.auth2.getAuthInstance().signOut();
-}
-
-/**
- * Append a pre element to the body containing the given message
- * as its text node. Used to display the results of the API call.
- *
- * @param {string} message Text to be placed in pre element.
- */
-function appendPre(message) {
-    var pre = document.getElementById('content');
-    var textContent = document.createTextNode(message + '\n');
-    pre.appendChild(textContent);
-}
-
-function showAlert(message) {
-    alert(message);
-}
-
-/**
- * Print the names and majors of students in a sample spreadsheet:
- * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-* https://docs.google.com/spreadsheets/d/1S9ngRN7jWHbgClBnJ-JBwGU3EVhXwyUB2Om9NfPUaqk/edit
- */
-function getRegister(range) {
-    return getSheetWithRange(range).then(function (response) {
-        var range = response.result;
-        if (range.values.length > 0) {
-            for (i = 0; i < range.values.length; i++) {
-                var row = range.values[i];
-                parsedEnties.push(dataServiceExt.getEntryJSON(row[0], row[1], row[3], row[4], row[2]));
-            }
-        } else {
-            showAlert('No data found.');
+//Google import directive
+app.directive('googleImportDirective', function () {
+    return {
+        templateUrl: 'directives/googleImportDirective.html',
+        controller: 'googleImportController',
+        link: function (scope, elem, attr) {
+            //angular.element('<script src="../scripts/googlesheet.js"></script>').appendTo(elem);
         }
-    }, function (response) {
-        showAlert('Error: ' + response.result.error.message);
-    });
-}
+    };
+});
+app.controller('googleImportController', ['$scope', '$http', '$timeout', 'tranSource', function ($scope, $http, $timeout, tranSource) {
+    $scope.message = "";
+    $scope.gsheetData = [];
+    $scope.importData = function () {
+        debugger;
+        var postData = [];
+        var test = tranSource;
+        $(':checkbox:checked').map(function () {
+            var vlu = $scope.gsheetData[this.value];
+            vlu.Mode = tranSource.filter(function (a) { return a.value.toLowerCase() == vlu.Mode })[0] | 1;
+            postData.push(vlu);
+        });
+        $http.post('registerService.php', { 'mode': 'bulkInsert', 'entry': postData }).then(function (response) {
+            setMessage("Import succeeded");
+        });
+    }
 
-function getSheetWithRange(range) {
-    if (gapi == undefined) showAlert('Unable to connect to Google API');
-    return gapi.client.sheets.spreadsheets.values.get({
-        spreadsheetId: '1S9ngRN7jWHbgClBnJ-JBwGU3EVhXwyUB2Om9NfPUaqk',
-        range: range
-    });
-}
+    var CLIENT_ID = '514289995274-7lu2meok547opdhobk1ltsd9c1dmdrtb.apps.googleusercontent.com';
+    var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
+    var SCOPES = "https://www.googleapis.com/auth/spreadsheets.readonly";
 
-var LastRowIndex = 0;
-var setLastRowIndex = function () {
-    return getSheetWithRange('Variables!A1').then(function (response) {
-        LastRowIndex = response.result.values[0];
-        document.getElementById('loading').style.display = 'none';
-    });
-}
+    var authorizeButton = document.getElementById('authorize-button');
+    var signoutButton = document.getElementById('signout-button');
 
-var fetchSheetData = function () {
-    var range = 'Register!A:E';
-    return getRegister(range);
-}
+    handleClientLoad();
+    function handleClientLoad() {
+        setMessage("Connecting to google sheets");
+        gapi.load('client:auth2', initClient);
+    }
 
-var refreshList = function (lastLoadedIndex) {
-    return setLastRowIndex().then(function () {
-        if (lastLoadedIndex == undefined) lastLoadedIndex = LastRowIndex;
-        var newLastLoadedIndex = lastLoadedIndex;
-        if ((lastLoadedIndex == LastRowIndex) && LastRowIndex > 0) lastLoadedIndex = 25;
-        var startIndex = LastRowIndex - lastLoadedIndex - 1;
-        if (startIndex <= 1) startIndex = 2;
-        var range = 'Register!A' + startIndex + ':E' + newLastLoadedIndex;
-        return { 'data': getRegister(range), 'newIndex': startIndex };
-    });
-};
+    function initClient() {
+        gapi.client.init({
+            discoveryDocs: DISCOVERY_DOCS,
+            clientId: CLIENT_ID,
+            scope: SCOPES
+        }).then(function () {
+            gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+            updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+            authorizeButton.onclick = handleAuthClick;
+            signoutButton.onclick = handleSignoutClick;
+        });
+    }
+
+    function updateSigninStatus(isSignedIn) {
+        if (isSignedIn) {
+            setMessage("Signed-in in google sheets");
+            $('#signIn').hide();
+            $('#signOut').show();
+            fetchSheetData();
+        } else {
+            $('#signIn').show();
+            $('#signOut').hide();
+            setMessage("Please sign-in to import data");
+        }
+    }
+    function handleAuthClick(event) {
+        gapi.auth2.getAuthInstance().signIn();
+    }
+    function handleSignoutClick(event) {
+        gapi.auth2.getAuthInstance().signOut();
+        $scope.gsheetData = [];
+    }
+    function appendPre(message) {
+        var pre = document.getElementById('content');
+        var textContent = document.createTextNode(message + '\n');
+        pre.appendChild(textContent);
+    }
+    function setMessage(message) {
+        $timeout(function () {
+            $scope.$apply(function () {
+                $scope.message = message;
+            });
+        }, 10);
+    }
+    function getEntryJSON(description, amount, date, mode) {
+        return {
+            'Date': date,
+            'Amount': amount,
+            'Mode': mode,
+            'Description': description,
+            'IsExpense': true
+        };
+    };
+    function getRegister(range) {
+        return getSheetWithRange(range).then(function (response) {
+            if (response.result.values.length > 0) {
+                var parsedEnties = [];
+                for (i = 0; i < response.result.values.length; i++) {
+                    var row = response.result.values[i];
+                    parsedEnties.push(getEntryJSON(row[0], row[1], row[2], row[3]));
+                }
+                $scope.gsheetData = parsedEnties;
+                setMessage("Entries found : " + parsedEnties.length);
+                $scope.$apply();
+            } else {
+                setMessage("Sheets is blank. No data to load");
+            }
+        }, function (response) {
+            setMessage("Connection failed: " + response.result.error.message);
+        });
+    }
+    function getSheetWithRange(range) {
+        if (gapi == undefined) setMessage('Unable to connect to Google API');
+        return gapi.client.sheets.spreadsheets.values.get({
+            spreadsheetId: '1S9ngRN7jWHbgClBnJ-JBwGU3EVhXwyUB2Om9NfPUaqk',
+            range: range
+        });
+    }
+    var fetchSheetData = function () {
+        setMessage("Trying to fetch data from google sheet");
+        var range = 'May 2017!H2:K';
+        return getRegister(range);
+    }
+}]);
