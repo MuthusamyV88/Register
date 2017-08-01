@@ -1,0 +1,19 @@
+<div ng-controller="googleImportController">
+    <table style="width: 100%">
+        <tr>
+            <td>
+                <h3 ng-bind="message"></h3>
+            </td>
+            <td class="text-right">
+                <div id="signIn" style="display: none;"><button class="btn btn-primary" id="authorize-button">Sign in</button></div>
+                <div id="signOut" style="display: none;"><button class="btn btn-primary" id="signout-button">Sign Out</button></div>
+            </td>
+    </table>
+    <div ng-show="gsheetData.length>0">
+        <h5><input type="button" ng-click="importData()" class="btn-success" value="Import" /> Pick records to import. <a href="#"
+                ng-click="selectAll=!selectAll">{{selectAll?"Deselect all":"Select all"}}</a></h5>
+    </div>
+    <div ng-repeat="dat in gsheetData track by $index">
+        <input type="checkbox" ng-checked="selectAll" value="{{$index}}"> <span ng-bind="dat.Date"></span> - <span ng-bind="dat.Description"></span> - <span ng-bind="dat.Amount"></span>
+    </div>
+</div>

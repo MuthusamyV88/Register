@@ -1,0 +1,104 @@
+.rounded {
+    border-radius: 5px;
+    border: 2px solid;
+    margin-top: 10px;
+}
+
+.rounded .fa {
+    font-size: 1.5em;
+    padding-left: 5px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.rounded table {
+    width: 100%;
+}
+
+.rounded table.header {
+    border-bottom: 2px solid;
+}
+
+.rounded table.header td, .rounded table.body td {
+    padding: 5px;
+}
+
+.incomeEntry {
+    border-color: #75cc8c;
+    background-color: #d1e4d1;
+}
+
+.incomeEntry table {
+    color: #44674d;
+}
+
+.incomeEntry table.header {
+    border-bottom: 2px solid #75cc8c;
+}
+
+.incomeEntry .body .amount {
+    border-left: 2px solid #75cc8c;
+    font-size: 2em;
+    width: 10%;
+}
+
+.expenseEntry {
+    border-color: #f18880;
+    background-color: #fbe5e5;
+}
+
+.expenseEntry table {
+    color: #7b342e;
+}
+
+.expenseEntry table.header {
+    border-bottom: 2px solid #f18880;
+}
+
+.expenseEntry .body .amount {
+    border-left: 2px solid #f18880;
+    font-size: 2em;
+    width: 10%;
+}
+
+.loader {
+    background-image: url('../images/loader.gif');
+    height: 42px;
+    width: 42px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.chartAreaWrapper {
+    overflow-x: scroll;
+    width: 95%;
+    margin: 0 auto;
+    border: solid 1px #eee;
+    padding: 5px;
+}
+
+.dashboardHeader {
+    text-align: center;
+    color: #777
+}
+
+.instantAdd {
+    top: -webkit-calc(100% - 45px);
+    top: -moz-calc(100% - 45px);
+    top: calc(100% - 45px);
+    left: -webkit-calc(100% - 45px);
+    left: -moz-calc(100% - 45px);
+    left: calc(100% - 45px);
+    position: fixed;
+    border-radius: 5px;
+    border: 1px solid #dddddd;
+    background-color: #f8f8f8;
+    padding: 10px;
+    color: #777;
+    opacity: 0.75;
+    filter: alpha(opacity=50);
+}

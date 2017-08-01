@@ -1,0 +1,14 @@
+<div class="dashboardHeader">
+    <h3>Historic view</h3>
+</div>
+<div class="chartAreaWrapper">
+    <canvas id="bar" class="chart chart-bar" height="200" width="{{barWidth}}" chart-colors="options.colors" chart-options="options"
+        chart-data="data" chart-labels="labels" chart-series="series"></canvas>
+</div>
+<div ng-show="top5.length>0" class="dashboardHeader">
+    <h3>Today's top 5 expenses</h3>
+</div>
+<view-entries-directive ng-if="top5.length>0" top5="top5"></view-entries-directive>
+<div class="instantAdd" ng-click="quickAdd()">
+    <i class="fa fa-plus"></i>
+</div>

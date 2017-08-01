@@ -1,0 +1,30 @@
+<div id="div{{entry.EntryID}}" ng-repeat="entry in entries track by $index" class="rounded" ng-class="{'incomeEntry':entry.IsExpense==0, 'expenseEntry':entry.IsExpense==1}">
+    <table class="header">
+        <tr>
+            <td>
+                <b>{{entry.EntryDate|date : "dd MMM, yyyy (EEEE)"}}</b>
+                <i ng-click="edit(entry,$index)" class="fa fa-pencil-square-o"></i>
+                <i ng-click="delete(entry.EntryID)" class="fa fa-times"></i>
+            </td>
+            <td class="text-right"><i class="fa {{(source|filter:{'key':entry.Source})[0].icon}}"></i></td>
+        </tr>
+    </table>
+    <table class="body">
+        <tr>
+            <td ng-bind="entry.Description"></td>
+            <td class="text-center amount">{{entry.Amount|currency:"":0}}</td>
+        </tr>
+    </table>
+</div>
+<div class="modal" id="modalEdit" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <register-entry-directive></register-entry-directive>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="instantAdd" ng-click="quickAdd()">
+    <i class="fa fa-plus"></i>
+</div>
