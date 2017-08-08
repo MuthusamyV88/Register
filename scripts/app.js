@@ -110,15 +110,26 @@ app.controller('viewEntriesController', ['$scope', '$http', 'tranSource', 'utili
     let msg_del_confirm = "Are you sure to delete this record?";
     let getList = () => {
         if (angular.isDefined($scope.top5)) {
-            $scope.entries = $scope.top5;
+            $scope.entries = groupResult($scope.top5);
         }
         else {
             utility.loader('show');
             $http.get('registerService.php?mode=list').then(function (response) {
-                $scope.entries = response.data;
+                $scope.entries = groupResult(response.data);
                 utility.loader('hide');
             });
         }
+    };
+
+    let groupResult = (entries) => {
+        var groupedResult = {};
+        angular.forEach(entries, (vlu, key) => {
+            if (groupedResult[vlu.EntryDate] == undefined)
+                groupedResult[vlu.EntryDate] = { 'group': [], 'totalExpense': 0 };
+            groupedResult[vlu.EntryDate].group.push(vlu);
+            groupedResult[vlu.EntryDate].totalExpense += vlu.IsExpense == 1 ? vlu.Amount : 0;
+        });
+        return groupedResult;
     };
     let deleteEntry = (entryId) => {
         $http.get('registerService.php?mode=delete&entryId=' + entryId).then(function (response) {
