@@ -125,9 +125,9 @@ app.controller('viewEntriesController', ['$scope', '$http', 'tranSource', 'utili
         var groupedResult = {};
         angular.forEach(entries, (vlu, key) => {
             if (groupedResult[vlu.EntryDate] == undefined)
-                groupedResult[vlu.EntryDate] = { 'group': [], 'totalExpense': 0 };
+                groupedResult[vlu.EntryDate] = { 'group': [], 'totalExpense': 0, 'key': key };
             groupedResult[vlu.EntryDate].group.push(vlu);
-            groupedResult[vlu.EntryDate].totalExpense += vlu.IsExpense == 1 ? vlu.Amount : 0;
+            groupedResult[vlu.EntryDate].totalExpense += vlu.IsExpense == 1 ? parseInt(vlu.Amount) : 0;
         });
         return groupedResult;
     };
