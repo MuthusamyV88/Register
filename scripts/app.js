@@ -10,10 +10,15 @@ app.controller('home', ['$scope', '$http', '$interval', function ($scope, $http,
     $scope.template = { "name": "dashboard" };
 }]);
 app.constant('tranSource', [
-    { 'key': '1', 'value': 'Cash', 'icon': 'fa-inr' },
+    { 'key': '1', 'value': 'Cash', 'icon': 'fa-inr', 'isDefault': true },
     { 'key': '2', 'value': 'Credit card', 'icon': 'fa-cc-mastercard' },
     { 'key': '3', 'value': 'Debit card', 'icon': 'fa-cc-visa' },
-    { 'key': '4', 'value': 'Net banking', 'icon': 'fa-laptop' }]);
+    { 'key': '4', 'value': 'Net banking', 'icon': 'fa-laptop' },
+    { 'key': '1', 'value': 'HDFC', 'icon': '../images/hdfc.png', 'parentKey': ['2', '3', '4'] },
+    { 'key': '2', 'value': 'ICICI', 'icon': '../images/icici.png', 'parentKey': ['2', '3', '4'], 'isDefault': true },
+    { 'key': '3', 'value': 'SBI', 'icon': '../images/sbi.png', 'parentKey': ['2'] },
+    { 'key': '3', 'value': 'IOB', 'icon': '../images/iob.png', 'parentKey': ['3', '4'] }
+]);
 
 //Dashboard directive
 app.directive('dashboardDirective', function () {
@@ -89,6 +94,7 @@ app.controller('registerEntryController', ['$scope', '$http', 'tranSource', func
             'Amount': undefined,
             'EntryDate': new Date(),
             'Source': '1',
+            'CCsource': '1',
             'IsExpense': true
         };
     }
@@ -147,4 +153,35 @@ app.controller('viewEntriesController', ['$scope', '$http', 'tranSource', 'utili
         utility.confirm(msg_del_confirm, () => { deleteEntry(entryId); });
     }
     getList();
+}]);
+
+//Bank name selector directive
+app.directive('ccBank', function () {
+    return {
+        scope: { 'mode': '=mode' },
+        templateUrl: 'directives/ccBankSelector.html',
+        controller: 'ccBank',
+        link: function ($scope, $elem, $attr) {
+            $scope.thisElem = $elem[0];
+            $scope.$watch('mode', function (val) {
+                $scope.imgdata = $scope.tranSource.filter((elem) => { return elem.parentKey && elem.parentKey.indexOf($scope.mode) >= 0; });
+                if ($scope.imgdata != undefined && $scope.imgdata.length > 0) {
+                    var selected = $scope.imgdata.filter((r) => { return r.isDefault == true; });
+                    $scope.selected = selected != undefined && selected.length ? selected[0].key : $scope.imgdata[0].key;
+                }
+            });
+        }
+    }
+});
+app.controller('ccBank', ['$scope', 'tranSource', function ($scope, tranSource) {
+    $scope.tranSource = tranSource;
+    $scope.toggleList = () => {
+        var elem = angular.element($scope.thisElem.querySelector('#list'));
+        var disProp = elem.css('display') == 'none' ? 'block' : 'none';
+        elem.css('display', disProp);
+    }
+    $scope.selectBank = (key) => {
+        $scope.selected = key;
+        $scope.toggleList();
+    }
 }]);
