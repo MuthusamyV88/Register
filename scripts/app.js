@@ -14,10 +14,10 @@ app.constant('tranSource', [
     { 'key': '2', 'value': 'Credit card', 'icon': 'fa-cc-mastercard' },
     { 'key': '3', 'value': 'Debit card', 'icon': 'fa-cc-visa' },
     { 'key': '4', 'value': 'Net banking', 'icon': 'fa-laptop' },
-    { 'key': '1', 'value': 'HDFC', 'icon': '../images/hdfc.png', 'parentKey': ['2', '3', '4'] },
-    { 'key': '2', 'value': 'ICICI', 'icon': '../images/icici.png', 'parentKey': ['2', '3', '4'], 'isDefault': true },
-    { 'key': '3', 'value': 'SBI', 'icon': '../images/sbi.png', 'parentKey': ['2'] },
-    { 'key': '3', 'value': 'IOB', 'icon': '../images/iob.png', 'parentKey': ['3', '4'] }
+    { 'key': '1', 'value': 'HDFC', 'icon': '/images/hdfc.png', 'parentKey': ['2', '3', '4'] },
+    { 'key': '2', 'value': 'ICICI', 'icon': '/images/icici.png', 'parentKey': ['2', '3', '4'], 'isDefault': true },
+    { 'key': '3', 'value': 'SBI', 'icon': '/images/sbi.png', 'parentKey': ['2'] },
+    { 'key': '4', 'value': 'IOB', 'icon': '/images/iob.png', 'parentKey': ['3', '4'] }
 ]);
 
 //Dashboard directive

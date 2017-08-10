@@ -83,7 +83,8 @@
 
 .dashboardHeader {
     text-align: center;
-    color: #777
+    color: #777;
+    font-size: 18px;
 }
 
 .instantAdd {
