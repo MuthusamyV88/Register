@@ -22,7 +22,7 @@
                 <option ng-repeat="opt in Source | filter:{parentKey:'!'}" value={{opt.key}}>{{opt.value}}</option>
             </select>
         </div>
-        <cc-bank mode="entry.Source"></cc-bank>
+        <cc-bank mode="entry.Source" selected-bank="entry.Bank" ></cc-bank>
     </div>
     <div class="action">
         <table style="width:100%" class="text-center">

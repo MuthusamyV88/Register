@@ -1,6 +1,6 @@
 <div ng-show="imgdata.length > 0" class="bankSelector">
     <div ng-click="toggleList()" class="selection bankName">
-        <img ng-src="{{opt.icon}}" ng-repeat="opt in imgdata | filter:{'key':selected}" />
+        <img class="selected" ng-src="{{opt.icon}}" ng-repeat="opt in imgdata | filter:{'key':selected}" />
     </div>
     <div id="list" class="lister" style="display: none;">
         <ul class="nav selectionList">

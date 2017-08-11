@@ -1,12 +1,13 @@
 <div class="dashboardHeader">
-    <h3>Historic view</h3>
+    Historic view
 </div>
 <div class="chartAreaWrapper">
     <canvas id="bar" class="chart chart-bar" height="200" width="{{barWidth}}" chart-colors="options.colors" chart-options="options"
         chart-data="data" chart-labels="labels" chart-series="series"></canvas>
 </div>
+<br/>
 <div ng-show="top5.length>0" class="dashboardHeader">
-    <h3>Today's top 5 expenses</h3>
+    Today's top 5 expenses
 </div>
 <view-entries-directive ng-if="top5.length>0" top5="top5"></view-entries-directive>
 <div class="instantAdd" ng-click="quickAdd()">

@@ -8,3 +8,6 @@ group by MONTH(EntryDate),isExpense
 order by EntryDate DESC;
 END //
 delimiter ;
+
+--Added new Bank column to register table
+ALTER TABLE  `register` ADD  `Bank` INT NULL DEFAULT NULL COMMENT  'Bank ID';

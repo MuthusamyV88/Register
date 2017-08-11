@@ -2,6 +2,10 @@ $(document).ready(function () {
     $('.nav a:not(".dropdown-toggle")').click(function () {
         $('.navbar-toggle:visible').click();
     });
+    $('body').on('click', function (e) {
+        if (e.target.nodeName != 'IMG' && e.target.className.indexOf('selected') < 0)
+            $('.bankSelector .lister').hide();
+    });
 });
 
 var app = angular.module('app', ['chart.js']);
@@ -95,7 +99,8 @@ app.controller('registerEntryController', ['$scope', '$http', 'tranSource', func
             'EntryDate': new Date(),
             'Source': '1',
             'CCsource': '1',
-            'IsExpense': true
+            'IsExpense': true,
+            'Bank': undefined
         };
     }
     $scope.resetEntry();
@@ -141,6 +146,7 @@ app.controller('viewEntriesController', ['$scope', '$http', 'tranSource', 'utili
             EntryDate: new Date(entry.EntryDate),
             IsExpense: entry.IsExpense == '1',
             Source: entry.Source,
+            Bank: entry.Bank,
             EntryID: entry.EntryID
         };
         $scope.editedId = index;
@@ -158,7 +164,10 @@ app.controller('viewEntriesController', ['$scope', '$http', 'tranSource', 'utili
 //Bank name selector directive
 app.directive('ccBank', function () {
     return {
-        scope: { 'mode': '=mode' },
+        scope: {
+            'mode': '=mode',
+            'selectedBank': '=?selectedBank'
+        },
         templateUrl: 'directives/ccBankSelector.html',
         controller: 'ccBank',
         link: function ($scope, $elem, $attr) {
@@ -166,8 +175,11 @@ app.directive('ccBank', function () {
             $scope.$watch('mode', function (val) {
                 $scope.imgdata = $scope.tranSource.filter((elem) => { return elem.parentKey && elem.parentKey.indexOf($scope.mode) >= 0; });
                 if ($scope.imgdata != undefined && $scope.imgdata.length > 0) {
-                    var selected = $scope.imgdata.filter((r) => { return r.isDefault == true; });
+                    var selected = $scope.selectedBank == undefined ? $scope.imgdata.filter((r) => { return r.isDefault == true; }) : [{ 'key': $scope.selectedBank }];
                     $scope.selected = selected != undefined && selected.length ? selected[0].key : $scope.imgdata[0].key;
+                }
+                else {
+                    $scope.selected = $scope.selectedBank = undefined;
                 }
             });
         }
@@ -181,7 +193,7 @@ app.controller('ccBank', ['$scope', 'tranSource', function ($scope, tranSource) 
         elem.css('display', disProp);
     }
     $scope.selectBank = (key) => {
-        $scope.selected = key;
+        $scope.selected = $scope.selectedBank = key;
         $scope.toggleList();
     }
 }]);
