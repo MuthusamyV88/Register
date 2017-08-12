@@ -1,7 +1,20 @@
 .rounded {
     border-radius: 5px;
     border: 2px solid;
-    margin-top: 10px;
+    margin: 2px 2px 5px 2px;
+}
+
+.oneDay{
+    border-radius: 5px;
+    border: 1px solid rgba(231, 231, 231, 0.5);
+    margin: 2px 2px 5px 2px;
+    background-color: rgba(231, 231, 231, 0.5);
+}
+.oneDay .totalExpense
+{
+    text-align: right;
+    margin:2px;
+    color: #7b342e;
 }
 
 .rounded .fa {
@@ -38,7 +51,7 @@
 
 .incomeEntry .body .amount {
     border-left: 2px solid #75cc8c;
-    font-size: 2em;
+    font-size: 1.5em;
     width: 10%;
 }
 
@@ -57,7 +70,7 @@
 
 .expenseEntry .body .amount {
     border-left: 2px solid #f18880;
-    font-size: 2em;
+    font-size: 1.5em;
     width: 10%;
 }
 
