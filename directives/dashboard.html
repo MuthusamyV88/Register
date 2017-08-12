@@ -6,9 +6,6 @@
         chart-data="data" chart-labels="labels" chart-series="series"></canvas>
 </div>
 <br/>
-<div ng-show="top5.length>0" class="dashboardHeader">
-    Today's top 5 expenses
-</div>
 <view-entries-directive ng-if="top5.length>0" top5="top5"></view-entries-directive>
 <div class="instantAdd" ng-click="quickAdd()">
     <i class="fa fa-plus"></i>
