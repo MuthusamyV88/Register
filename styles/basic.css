@@ -103,6 +103,7 @@
     color: #777;
     opacity: 0.75;
     filter: alpha(opacity=25);
+    cursor:pointer;
 }
 
 .transactionMode
