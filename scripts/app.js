@@ -8,6 +8,20 @@ $(document).ready(function () {
     });
 });
 
+function toggleDetail(status, caller) {
+    var thisParent = $(caller).parent();
+    var hiddenCols = thisParent.parent().parent().find('td.lHide');
+    if (status == 'show') {
+        hiddenCols.removeClass('hide');
+        thisParent.find('i.fa-eye-slash').show();
+    }
+    else {
+        hiddenCols.addClass('hide');
+        thisParent.find('i.fa-eye').show();
+    }
+    $(caller).hide();
+}
+
 var app = angular.module('app', ['chart.js']);
 app.controller('home', ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
     $scope.name = "My Register";
@@ -83,8 +97,10 @@ app.controller('registerEntryController', ['$scope', '$http', 'tranSource', func
         $http.post('registerService.php', { 'mode': $scope.showCancel == true ? 'update' : 'insert', 'entry': $scope.entry });
         if ($scope.showCancel) {
             $('#modalEdit').modal('hide');
-            if ($scope.entries != undefined && $scope.editedId != undefined)
-                $scope.entries[$scope.editedId] = $scope.entry
+            if ($scope.entries != undefined && $scope.editedId != undefined) {
+                $scope.entries[$scope.editedKey][$scope.type][$scope.editedId] = $scope.entry;
+                $scope.entries[$scope.editedKey].calculateTotal();
+            }
         }
         else {
             $scope.resetEntry();
@@ -132,24 +148,51 @@ app.controller('viewEntriesController', ['$scope', '$http', 'tranSource', 'utili
         }
     };
 
+    var calculateTotal = (groupedEntry) => {
+        var totIncome = 0, totExpense = 0;
+        angular.forEach(groupedEntry.expense, (val, key) => {
+            totExpense += parseInt(val.Amount);
+        });
+        angular.forEach(groupedEntry.income, (val, key) => {
+            totIncome += parseInt(val.Amount);
+        });
+        groupedEntry.totalExpense = totExpense;
+        groupedEntry.totalIncome = totIncome;
+    }
+
     let groupResult = (entries) => {
         var groupedResult = {};
         angular.forEach(entries, (vlu, key) => {
             if (groupedResult[vlu.EntryDate] == undefined)
-                groupedResult[vlu.EntryDate] = { 'group': [], 'totalExpense': 0, 'key': key };
-            groupedResult[vlu.EntryDate].group.push(vlu);
-            groupedResult[vlu.EntryDate].totalExpense += vlu.IsExpense == 1 ? parseInt(vlu.Amount) : 0;
+                groupedResult[vlu.EntryDate] = {
+                    'income': [],
+                    'totalIncome': 0,
+                    'expense': [],
+                    'totalExpense': 0,
+                    'key': key,
+                    'date': vlu.EntryDate,
+                    'calculateTotal': function () { calculateTotal(this); }
+                };
+            if (vlu.IsExpense == '1') {
+                groupedResult[vlu.EntryDate].expense.push(vlu);
+                groupedResult[vlu.EntryDate].totalExpense += parseInt(vlu.Amount);
+            }
+            else {
+                groupedResult[vlu.EntryDate].income.push(vlu);
+                groupedResult[vlu.EntryDate].totalIncome += parseInt(vlu.Amount);
+            }
         });
         return groupedResult;
     };
-    let deleteEntry = (entryId) => {
-        $http.get('registerService.php?mode=delete&entryId=' + entryId).then(function (response) {
-            $('#div' + entryId).remove();
+    let deleteEntry = (key, index, type, id) => {
+        $http.get('registerService.php?mode=delete&entryId=' + id).then(function (response) {
+            $scope.entries[key][type].splice(index, 1);
+            $scope.entries[key].calculateTotal();
             utility.closeModal();
         });
     };
     $scope.utility = utility;
-    $scope.edit = (entry, index) => {
+    $scope.edit = (entry, key, index, type) => {
         $scope.showCancel = true;
         $scope.entry = {
             Description: entry.Description,
@@ -161,13 +204,15 @@ app.controller('viewEntriesController', ['$scope', '$http', 'tranSource', 'utili
             EntryID: entry.EntryID
         };
         $scope.editedId = index;
+        $scope.editedKey = key;
+        $scope.type = type;
         $('#modalEdit').modal('show');
     }
     $scope.quickAdd = () => {
         $scope.$parent.template.name = 'addEntry';
     };
-    $scope.delete = (entryId) => {
-        utility.confirm(msg_del_confirm, () => { deleteEntry(entryId); });
+    $scope.delete = (key, index, type, id) => {
+        utility.confirm(msg_del_confirm, () => { deleteEntry(key, index, type, id); });
     }
     getList();
 }]);

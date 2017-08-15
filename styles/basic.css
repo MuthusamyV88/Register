@@ -6,15 +6,28 @@
 
 .oneDay{
     border-radius: 5px;
-    border: 1px solid rgba(231, 231, 231, 0.5);
+    border: 1px solid #e7e7e7;
     margin: 2px 2px 5px 2px;
-    background-color: rgba(231, 231, 231, 0.5);
+    background-color: #f8f8f8;
 }
-.oneDay .totalExpense
+.margin2px
+{
+    margin:2px;
+}
+
+.tLeft
+{
+    text-align: left;
+}
+
+.tRight
 {
     text-align: right;
-    margin:2px;
-    color: #7b342e;
+}
+
+.grayText
+{
+    color:#777;
 }
 
 .rounded .fa {
@@ -40,8 +53,7 @@
     border-color: #75cc8c;
     background-color: #d1e4d1;
 }
-
-.incomeEntry table {
+.incomeEntry table, .greenText {
     color: #44674d;
 }
 
@@ -55,12 +67,41 @@
     width: 10%;
 }
 
+.eye
+{
+    float: right;
+    margin-top: 3px;
+    margin-right: 5px;
+}
+
+.incomeEntry table tr td
+{
+    border: solid 2px #75cc8c;
+    line-height: 27px;
+}
+
+.incomeEntry table tr td:first-child
+{
+    padding-left: 5px;
+}
+
+.expenseEntry table tr td
+{
+    border: solid 2px #f18880;
+    line-height: 27px;
+}
+
+.expenseEntry table tr td:first-child
+{
+    padding-left: 5px;
+}
+
 .expenseEntry {
     border-color: #f18880;
     background-color: #fbe5e5;
 }
 
-.expenseEntry table {
+.expenseEntry table, .redText {
     color: #7b342e;
 }
 

@@ -1,24 +1,54 @@
 <div ng-repeat="groupedEntry in entries track by $index" class="oneDay">
-    <div id="div{{entry.EntryID}}" ng-repeat="entry in groupedEntry.group track by $index" class="rounded" ng-class="{'incomeEntry':entry.IsExpense==0, 'expenseEntry':entry.IsExpense==1}">
-        <table class="header">
-            <tr>
-                <td>
-                    <b>{{entry.EntryDate|date : "dd MMM, yyyy (EEEE)"}}</b>
-                    <i ng-click="edit(entry,$index)" class="fa fa-pencil-square-o"></i>
-                    <i ng-click="delete(entry.EntryID)" class="fa fa-times"></i>
-                </td>
-                <td class="text-right"><i class="fa {{(source|filter:{'key':entry.Source})[0].icon}}"></i></td>
-            </tr>
-        </table>
-        <table class="body">
-            <tr>
-                <td ng-bind="entry.Description"></td>
-                <td class="text-center amount">{{entry.Amount|currency:"":0}}</td>
-            </tr>
-        </table>
+    <div class="margin2px tLeft grayText">
+        <b>{{groupedEntry.date|date : "dd MMM, yyyy (EEEE)"}}</b>
+        <div class="eye">
+            <i class="fa fa-eye" onclick="toggleDetail('show', this)"></i>
+            <i class="fa fa-eye-slash" onclick="toggleDetail('hide', this)" style="display:none"></i>
+        </div>
     </div>
-    <div class="totalExpense">
-        <i>Total expense:</i> <b>{{groupedEntry.totalExpense|currency:"":0}}</b>
+    <div ng-if="groupedEntry.income.length > 0">
+        <div class="rounded incomeEntry">
+            <table style="border-collapse:collapse; border-style:hidden;">
+                <tr ng-repeat="entry in groupedEntry.income track by $index">
+                    <td ng-bind="entry.Description" style="width:100%"></td>
+                    <td style="min-width:60px;" class="lHide hide">
+                        <i ng-click="edit(entry,groupedEntry.date,$index,'income')" class="fa fa-pencil-square-o"></i>
+                        <i ng-click="delete(groupedEntry.date,$index,'income',entry.EntryID)" class="fa fa-times"></i>
+                    </td>
+                    <td class="lHide hide">
+                        <i class="fa {{(source|filter:{'key':entry.Source})[0].icon}}"></i>
+                    </td>
+                    <td style="min-width:40px; text-align:center; padding:0 1px 0 1px">
+                        <b>{{entry.Amount|currency:"":0}}</b>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="margin2px tRight grayText">
+            <i>Total income:</i> <b>{{groupedEntry.totalIncome|currency:"":0}}</b>
+        </div>
+    </div>
+    <div ng-if="groupedEntry.expense.length > 0">
+        <div class="rounded expenseEntry">
+            <table style="border-collapse:collapse; border-style:hidden;">
+                <tr ng-repeat="entry in groupedEntry.expense track by $index">
+                    <td ng-bind="entry.Description" style="width:100%"></td>
+                    <td style="min-width:60px;" class="lHide hide">
+                        <i ng-click="edit(entry,groupedEntry.date,$index,'expense')" class="fa fa-pencil-square-o"></i>
+                        <i ng-click="delete(groupedEntry.date,$index,'expense',entry.EntryID)" class="fa fa-times"></i>
+                    </td>
+                    <td class="lHide hide">
+                        <i class="fa {{(source|filter:{'key':entry.Source})[0].icon}}"></i>
+                    </td>
+                    <td style="min-width:40px; text-align:center; padding:0 1px 0 1px">
+                        <b>{{entry.Amount|currency:"":0}}</b>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="margin2px tRight grayText">
+            <i>Total expense:</i> <b>{{groupedEntry.totalExpense|currency:"":0}}</b>
+        </div>
     </div>
 </div>
 <div class="modal" id="modalEdit" role="dialog">
