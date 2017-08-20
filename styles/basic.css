@@ -207,3 +207,20 @@
     clear: both;
     margin-top: 50px;
 }
+#search {
+    position: relative;
+    font-size: 18px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: -20px auto 0;
+}
+#search label {
+    position: absolute;
+    left: 8px;
+    top: 14px;
+}
+#search #search-input, #search .hint {
+    padding-left: 28px;
+    padding-right: 43px;
+    border-radius: 23px;
+}

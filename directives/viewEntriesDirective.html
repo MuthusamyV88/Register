@@ -1,4 +1,10 @@
-<div ng-repeat="groupedEntry in entries track by $index" class="oneDay">
+<div ng-show="showSearch">
+    <section id="search">
+        <label for="search-input"><i class="fa fa-search" aria-hidden="true"></i></label>
+        <input id="search-input" ng-model="searchText" class="form-control" placeholder="Search entry here" spellcheck="false" autocorrect="off" />
+    </section>
+</div>
+<div ng-repeat="groupedEntry in entries | searchOn:searchText track by $index" class="oneDay">
     <div class="margin2px tLeft grayText">
         <b>{{groupedEntry.date|date : "dd MMM, yyyy (EEEE)"}}</b>
         <div class="eye">
