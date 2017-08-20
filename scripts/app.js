@@ -132,16 +132,43 @@ app.directive('viewEntriesDirective', function () {
         controller: 'viewEntriesController'
     };
 });
+app.filter('searchOn', () => {
+    return (items, searchOn) => {
+        if (searchOn == undefined || searchOn.trim() == '' || searchOn.length < 3) return items;
+        var filtered = {};
+        angular.forEach(items, (vlu, ky) => {
+            var found = false;
+            if (vlu.expense != undefined && vlu.expense.length)
+                for (var i = 0; i < vlu.expense.length; i++) {
+                    if (vlu.expense[i].Description.toLowerCase().indexOf(searchOn.toLowerCase()) >= 0) {
+                        filtered[ky] = vlu;
+                        found = true;
+                        break;
+                    }
+                }
+            if (vlu.income != undefined && vlu.income.length)
+                for (var i = 0; i < vlu.income.length > 0 && !found; i++) {
+                    if (vlu.income[i].Description.toLowerCase().indexOf(searchOn.toLowerCase()) >= 0) {
+                        filtered[ky] = vlu;
+                        break;
+                    }
+                }
+        });
+        return filtered;
+    };
+});
 app.controller('viewEntriesController', ['$scope', '$http', 'tranSource', 'utility', '$timeout', function ($scope, $http, tranSource, utility, $timeout) {
     $scope.source = tranSource;
     let msg_del_confirm = "Are you sure to delete this record?";
     let getList = () => {
         if (angular.isDefined($scope.top5)) {
+            $scope.showSearch = false;
             $scope.entries = groupResult($scope.top5);
         }
         else {
             utility.loader('show');
             $http.get('registerService.php?mode=list').then(function (response) {
+                $scope.showSearch = response.data.length > 0;
                 $scope.entries = groupResult(response.data);
                 utility.loader('hide');
             });

@@ -36,7 +36,7 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">System <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">				          
-                <li><a href="#" ng-click="template.name='googleImport'">Google import</a></li>
+                <li><a href="#" ng-click="template.name='googleImport'">Backup to gsheet</a></li>
                 <li><a href="#">Download register</a></li>
                 <li><a href="#">Customize</a></li>
               </ul>
