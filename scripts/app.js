@@ -146,8 +146,8 @@ app.filter('searchOn', () => {
                         break;
                     }
                 }
-            if (vlu.income != undefined && vlu.income.length)
-                for (var i = 0; i < vlu.income.length > 0 && !found; i++) {
+            if (!found && vlu.income != undefined && vlu.income.length)
+                for (var i = 0; i < vlu.income.length > 0; i++) {
                     if (vlu.income[i].Description.toLowerCase().indexOf(searchOn.toLowerCase()) >= 0) {
                         filtered[ky] = vlu;
                         break;
