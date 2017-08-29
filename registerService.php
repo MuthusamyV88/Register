@@ -110,4 +110,4 @@
 		//header('content-type:text/plain');
 		echo json_encode($retVal);		
 	}
-?> 
+?>
