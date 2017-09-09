@@ -1,6 +1,6 @@
 <form>
     <div class="form-group">
-        <label for="Description">Description</label>
+        <label for="Description">Description</label><span ng-click="addFavourite()" class="ml-5 favourite insert"><i class="fa fa-star"></i></span>
         <textarea name="Description" ng-model="entry.Description" class="form-control"></textarea>
     </div>
     <div class="form-group">
@@ -22,7 +22,7 @@
                 <option ng-repeat="opt in Source | filter:{parentKey:'!'}" value={{opt.key}}>{{opt.value}}</option>
             </select>
         </div>
-        <cc-bank mode="entry.Source" selected-bank="entry.Bank" ></cc-bank>
+        <cc-bank mode="entry.Source" selected-bank="entry.Bank"></cc-bank>
     </div>
     <div class="action">
         <table style="width:100%" class="text-center">
@@ -34,3 +34,6 @@
         </table>
     </div>
 </form>
+<div class="favourite" ng-repeat="fav in favourites">
+    <div class="fav-entry">{{fav.Favourite}}</div><div ng-click="deleteFavourite()" class="ml-5 fav-delete"><i class="fa fa-minus-circle"></i></div>
+</div>

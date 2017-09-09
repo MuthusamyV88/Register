@@ -1,3 +1,4 @@
+<!-- Will be deprecated -->
 <?php
 	require('connection.php');
 
@@ -89,6 +90,18 @@
 				$retVal = array();
 				$retVal["barData"] = $barData;
 				$retVal["top5"] = $top5;
+				break;
+			}
+			case "favourites":{
+				$sql = "SELECT * FROM `favourites` order by Id DESC";
+				$result = $conn->query($sql);
+				$favs = array();
+				if($result->num_rows > 0) {
+					while($post = $result->fetch_assoc()) {
+						$favs[] = $post;
+					}
+				}
+				$retVal = $favs;
 				break;
 			}
 			case "list":
