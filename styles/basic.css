@@ -224,3 +224,31 @@
     padding-right: 43px;
     border-radius: 23px;
 }
+.ml-5
+{
+    margin-left:5px;
+}
+.favourite
+{
+    border: 1px solid darkgray;
+    border-radius: 10px;
+    padding: 1px 3px;
+    background-color: lightgray;
+    cursor: pointer;
+}
+.fav-entry
+{
+    margin: 5px 0px;
+    padding: 0px 5px;
+    width: 95%;
+}
+.insert
+{
+    color: darkorange;
+}
+.fav-delete
+{
+    float:right;
+    color: #8E1515;
+    margin-top: 3px;
+}

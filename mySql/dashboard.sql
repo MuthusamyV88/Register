@@ -11,3 +11,10 @@ delimiter ;
 
 --Added new Bank column to register table
 ALTER TABLE  `register` ADD  `Bank` INT NULL DEFAULT NULL COMMENT  'Bank ID';
+
+--Create favourties table
+CREATE TABLE 'favourties'
+(
+    Id int,
+    Favourite varchar(200)
+)

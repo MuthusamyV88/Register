@@ -46,7 +46,7 @@ app.directive('dashboardDirective', function () {
     };
 });
 app.controller('dashboardController', ['$scope', '$http', 'tranSource', '$filter', function ($scope, $http, tranSource, $filter) {
-    $scope.top5 = [];
+    $scope.today = [];
     $scope.series = ['Income', 'Expense'];
     $scope.options = {
         scales: { yAxes: [{ display: false }] },
@@ -63,7 +63,7 @@ app.controller('dashboardController', ['$scope', '$http', 'tranSource', '$filter
     $scope.quickAdd = () => {
         $scope.$parent.template.name = 'addEntry';
     };
-    $http.get('registerService.php?mode=dashboard').then(function (response) {
+    $http.get('php/dashboard.php?mode=list').then(function (response) {
         var scopeData = [], income = [], expense = [], labels = [];
         var barData = response.data.barData;
         angular.forEach(barData, function (v, k) {
@@ -78,7 +78,7 @@ app.controller('dashboardController', ['$scope', '$http', 'tranSource', '$filter
         $scope.labels = labels;
         $scope.data = [income, expense];
         $scope.barWidth = labels.length * 125;
-        $scope.top5 = response.data.top5;
+        $scope.today = response.data.today;
     });
 }]);
 
@@ -92,9 +92,10 @@ app.directive('registerEntryDirective', function () {
 app.controller('registerEntryController', ['$scope', '$http', 'tranSource', function ($scope, $http, tranSource) {
     $scope.Source = tranSource;
     $scope.showCancel = false;
+    $scope.favourites = [];
     $scope.saveEntry = function (entryId) {
         $scope.entry.EntryID = entryId;
-        $http.post('registerService.php', { 'mode': $scope.showCancel == true ? 'update' : 'insert', 'entry': $scope.entry });
+        $http.post('php/entries.php', { 'mode': $scope.showCancel == true ? 'update' : 'insert', 'entry': $scope.entry });
         if ($scope.showCancel) {
             $('#modalEdit').modal('hide');
             if ($scope.entries != undefined && $scope.editedId != undefined) {
@@ -107,6 +108,12 @@ app.controller('registerEntryController', ['$scope', '$http', 'tranSource', func
             $('textarea').focus();
         }
     };
+    var loadFavourites = () => {
+        $http.get('php/favourites.php?mode=list').then(function (response) {
+            $scope.favourites = response.data
+        });
+    };
+    $scope.addFavourite = () => { }
     $scope.resetEntry = function () {
         $scope.entry = {
             'EntryID': undefined,
@@ -120,13 +127,14 @@ app.controller('registerEntryController', ['$scope', '$http', 'tranSource', func
         };
     }
     $scope.resetEntry();
+    loadFavourites();
 }]);
 
 //Register view directive
 app.directive('viewEntriesDirective', function () {
     return {
         scope: {
-            top5: '='
+            today: '='
         },
         templateUrl: 'directives/viewEntriesDirective.html',
         controller: 'viewEntriesController'
@@ -161,13 +169,13 @@ app.controller('viewEntriesController', ['$scope', '$http', 'tranSource', 'utili
     $scope.source = tranSource;
     let msg_del_confirm = "Are you sure to delete this record?";
     let getList = () => {
-        if (angular.isDefined($scope.top5)) {
+        if (angular.isDefined($scope.today)) {
             $scope.showSearch = false;
-            $scope.entries = groupResult($scope.top5);
+            $scope.entries = groupResult($scope.today);
         }
         else {
             utility.loader('show');
-            $http.get('registerService.php?mode=list').then(function (response) {
+            $http.get('php/entries.php?mode=list').then(function (response) {
                 $scope.showSearch = response.data.length > 0;
                 $scope.entries = groupResult(response.data);
                 utility.loader('hide');
@@ -212,7 +220,7 @@ app.controller('viewEntriesController', ['$scope', '$http', 'tranSource', 'utili
         return groupedResult;
     };
     let deleteEntry = (key, index, type, id) => {
-        $http.get('registerService.php?mode=delete&entryId=' + id).then(function (response) {
+        $http.get('php/entries.php?mode=delete&entryId=' + id).then(function (response) {
             $scope.entries[key][type].splice(index, 1);
             $scope.entries[key].calculateTotal();
             utility.closeModal();
