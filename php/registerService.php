@@ -71,7 +71,7 @@
 				break;
 			}
 			case "dashboard":{
-				$sql = "SELECT DATE_FORMAT(EntryDate, '%M %Y') `Month`, isExpense, SUM(AMOUNT) `Amount`  FROM `register` GROUP BY MONTH(EntryDate),isExpense order by EntryDate DESC";
+				$sql = "SELECT DATE_FORMAT(EntryDate, '%M %Y') `Month`, isExpense, SUM(AMOUNT) `Amount`  FROM `register` GROUP BY YEAR(EntryDate),MONTH(EntryDate),isExpense order by EntryDate DESC";
 				$result = $conn->query($sql);
 				$barData = array();
 				if($result->num_rows > 0) {
